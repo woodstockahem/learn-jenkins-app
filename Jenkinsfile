@@ -55,6 +55,9 @@ pipeline {
                             reuseNode true
                         }
                     }
+                    environment {
+                        CI_ENVIRONMENT_URL = 'https://chimerical-lebkuchen-53d975.netlify.app'
+                    }
                     steps {
                         sh '''
                             npm install serve
@@ -72,7 +75,7 @@ pipeline {
                                 keepAll: false,
                                 reportDir: 'playwright-report',
                                 reportFiles: 'index.html',
-                                reportName: 'Playwright HTML Report',
+                                reportName: 'Playwright Local Report',
                                 reportTitles: '',
                                 useWrapperFileDirectly: true,
                             ])
@@ -97,6 +100,35 @@ pipeline {
                     node_modules/.bin/netlify status
                     node_modules/.bin/netlify deploy --dir=build --prod
                 '''
+            }
+        }
+
+        stage('Prod E2E') {
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                    reuseNode true
+                }
+            }
+            steps {
+                sh '''
+                    npx playwright test --reporter=html 
+                '''    
+            }
+            post {
+                always {
+                    publishHTML([
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: false,
+                        icon: '',
+                        keepAll: false,
+                        reportDir: 'playwright-report',
+                        reportFiles: 'index.html',
+                        reportName: 'Playwright E2E Report',
+                        reportTitles: '',
+                        useWrapperFileDirectly: true,
+                    ])
+                }
             }
         }
     }
