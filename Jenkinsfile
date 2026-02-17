@@ -55,15 +55,13 @@ pipeline {
                             reuseNode true
                         }
                     }
-                    environment {
-                        CI_ENVIRONMENT_URL = 'https://chimerical-lebkuchen-53d975.netlify.app'
-                    }
+
                     steps {
                         sh '''
                             npm install serve
                             node_modules/.bin/serve -s build &
                             sleep 10
-                            npx playwright test --reporter=html --output=playwright-report
+                            npx playwright test --reporter=html 
                         '''
                     }
                     post {
@@ -91,6 +89,9 @@ pipeline {
                     image 'node:18-bullseye'
                     reuseNode true
                 }
+            }
+            environment {
+                CI_ENVIRONMENT_URL = 'https://chimerical-lebkuchen-53d975.netlify.app'
             }
             steps {
                 sh '''
