@@ -8,7 +8,7 @@ pipeline {
     }
     stages {
 
-null    stage('AWS') {
+        stage('AWS') {
             agent {
                 docker {
                     image 'amazon/aws-cli'
@@ -20,7 +20,8 @@ null    stage('AWS') {
                     aws --version
                 '''
             }
-}
+        }
+/*
         stage('Docker') {
             steps {
                 sh '''
@@ -102,6 +103,7 @@ null    stage('AWS') {
                 }
             }
         }
+*/
 /*
         stage('Deploy staging') {
             agent {
