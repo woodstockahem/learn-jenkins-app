@@ -1,15 +1,40 @@
 pipeline {
     agent any
 
-    // environment {
+    environment {
     //     // NETLIFY_SITE_ID = '504d2abe-a0c4-4add-b6cf-561ce3347d4b'
     //     // NETLIFY_AUTH_TOKEN = credentials('netlify-token')
     //     // REACT_APP_VERSION = "1.0.$BUILD_ID"
     //     AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')
     //     AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
-    // }
+           AWS_DEFAULT_REGION = 'eu-north-1'
+    }
 
     stages {
+
+       stage('Deploy to AWS') {
+            agent {
+                docker {
+                    image 'amazon/aws-cli'
+                    args "--entrypoint=''"
+                    reuseNode true
+                }
+            }
+            
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'my-aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
+                      // some block
+                      sh '''
+                         aws --version
+                         aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json
+                      '''
+                }
+                
+            }
+        }
+
+
+
 
 /*
         stage('Docker') {
@@ -38,31 +63,7 @@ pipeline {
                 '''
             }
         }
-
-        stage('AWS') {
-            agent {
-                docker {
-                    image 'amazon/aws-cli'
-                    args "--entrypoint=''"
-                    reuseNode true
-                }
-            }
-            environment {
-                AWS_S3_BUCKET = 's3://learn-jenkins-202602181342'
-            }
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'my-aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
-                      // some block
-                      sh '''
-                         aws --version
-                         aws s3 sync build $AWS_S3_BUCKET
-                      '''
-                }
-                
-            }
-        }
-
-
+ 
 /*
         stage('Tests') {
             parallel {
