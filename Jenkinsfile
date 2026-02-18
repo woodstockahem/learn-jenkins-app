@@ -3,9 +3,20 @@ pipeline {
 
     environment {
         NETLIFY_SITE_ID = '504d2abe-a0c4-4add-b6cf-561ce3347d4b'
-        NETLIFY_AUTH_TOKEN = credentials('netlify-token')
+        // NETLIFY_AUTH_TOKEN = credentials('netlify-token')
+        REACT_APP_VERSION = "1.0.$BUILD_ID"
     }
     stages {
+
+        stage('Docker') {
+            steps {
+                sh '''
+                    docker build -t my-playwright .
+                '''
+            }
+        }        
+
+
         stage('Build') {
             agent {
                 docker {
@@ -15,7 +26,6 @@ pipeline {
             }
             steps {
                 sh '''
-                    echo "Small Change..."
                     ls -la
                     node --version
                     npm --version
@@ -51,7 +61,7 @@ pipeline {
                 stage('E2E Tests') {
                     agent {
                         docker {
-                            image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                            image 'my-playwright'
                             reuseNode true
                         }
                     }
@@ -82,7 +92,7 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
+        stage('Deploy staging') {
             agent {
                 docker {
                     image 'node:18-bullseye'
@@ -92,16 +102,15 @@ pipeline {
             
             steps {
                 sh '''
-                    npm install netlify-cli
-                    node_modules/.bin/netlify --version
-                    echo "Deploying to Netlify site ID: $NETLIFY_SITE_ID"
-                    node_modules/.bin/netlify status
-                    node_modules/.bin/netlify deploy --dir=build --prod
+                    netlify --version
+                    echo "Deploying to Staging. site ID: $NETLIFY_SITE_ID"
+                    netlify status
+                    netlify deploy --dir=build 
                 '''
-            }
         }
 
-        stage('Prod E2E') {
+/*
+        stage('Deploy Prod') {
             agent {
                 docker {
                     image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
@@ -132,5 +141,6 @@ pipeline {
                 }
             }
         }
+        */
     }
 }
