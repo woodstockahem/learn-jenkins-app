@@ -15,7 +15,34 @@ pipeline {
 
     stages {
 
-       stage('Deploy to AWS') {
+        stage('Build') {
+            agent {
+                docker {
+                    image 'node:18-bullseye'
+                    reuseNode true
+                }
+            }
+            steps {
+                sh '''
+                    ls -la
+                    node --version
+                    npm --version
+                    npm ci
+                    npm run build
+                    ls -la
+                '''
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh '''
+                    docker build -t myjenkinsapp .
+                '''
+            }
+        } 
+
+        stage('Deploy to AWS') {
             agent {
                 docker {
                     image 'amazon/aws-cli'
@@ -39,37 +66,6 @@ pipeline {
             }
         }
 
-
-
-
-/*
-        stage('Docker') {
-            steps {
-                sh '''
-                    docker build -t my-playwright .
-                '''
-            }
-        }        
-*/
-        stage('Build') {
-            agent {
-                docker {
-                    image 'node:18-bullseye'
-                    reuseNode true
-                }
-            }
-            steps {
-                sh '''
-                    ls -la
-                    node --version
-                    npm --version
-                    npm ci
-                    npm run build
-                    ls -la
-                '''
-            }
-        }
- 
 /*
         stage('Tests') {
             parallel {
