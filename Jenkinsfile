@@ -44,6 +44,9 @@ pipeline {
                     env | grep -E 'DOCKER|BUILDKIT' || true
                     docker version || true
                     docker info || true
+                    echo "=== Debug: buildx ==="
+                    docker buildx ls || true
+                    export DOCKER_BUILDKIT=0
                     docker build -t myjenkinsapp .
                 '''
             }
