@@ -60,7 +60,7 @@ pipeline {
                             npm install serve
                             node_modules/.bin/serve -s build &
                             sleep 10
-                            npx playwright test --reporter=html --output=playwright-report 
+                            npx playwright test --reporter=html --output=test-results
                         '''
                     }
                     post {
@@ -113,7 +113,7 @@ pipeline {
             }
             steps {
                 sh '''
-                    npx playwright test --reporter=html --output=playwright-report 
+                    npx playwright test --reporter=html --output=test-results
                 '''    
             }
             post {
