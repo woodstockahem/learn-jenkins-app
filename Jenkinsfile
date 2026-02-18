@@ -1,12 +1,14 @@
 pipeline {
     agent any
-/*
-    environment {
-        NETLIFY_SITE_ID = '504d2abe-a0c4-4add-b6cf-561ce3347d4b'
-        NETLIFY_AUTH_TOKEN = credentials('netlify-token')
-        // REACT_APP_VERSION = "1.0.$BUILD_ID"
-    }
-*/
+
+    // environment {
+    //     // NETLIFY_SITE_ID = '504d2abe-a0c4-4add-b6cf-561ce3347d4b'
+    //     // NETLIFY_AUTH_TOKEN = credentials('netlify-token')
+    //     // REACT_APP_VERSION = "1.0.$BUILD_ID"
+    //     AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')
+    //     AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
+    // }
+
     stages {
 
         stage('AWS') {
@@ -17,10 +19,14 @@ pipeline {
                 }
             }
             steps {
-                sh '''
-                    aws --version
-                    aws s3 ls
-                '''
+                withCredentials([usernamePassword(credentialsId: 'my-aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
+                      // some block
+                      sh '''
+                         aws --version
+                         aws s3 ls
+                      '''
+                }
+                
             }
         }
 /*
