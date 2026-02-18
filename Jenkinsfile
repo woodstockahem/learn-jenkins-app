@@ -2,11 +2,6 @@ pipeline {
     agent any
 
     environment {
-    //     // NETLIFY_SITE_ID = '504d2abe-a0c4-4add-b6cf-561ce3347d4b'
-    //     // NETLIFY_AUTH_TOKEN = credentials('netlify-token')
-    //     // REACT_APP_VERSION = "1.0.$BUILD_ID"
-    //     AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')
-    //     AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
            AWS_DEFAULT_REGION = 'eu-north-1'
            AWS_ECS_CLUSTER = 'LearnJenkinsApp-Cluster-Prod'
            AWS_ECS_SERVICE = 'LearnJenkinsApp-Service-Prod'
@@ -37,14 +32,13 @@ pipeline {
         stage('Build Docker Image') {
               agent {
                 docker {
-                    image 'amazon/aws-cli'
+                    image 'my-aws-cli'
                     reuseNode true
                     args "-u root -v /var/run/docker.sock:/var/run/docker.sock --entrypoint=''"                    
                 }
             }
             steps {
                 sh '''
-                    amazon-linux-extras install docker
                     docker build -t myjenkinsapp .
                 '''
             }
@@ -64,8 +58,7 @@ pipeline {
                       // some block
                       sh '''
                          aws --version
-                         yum install -y jq
-                         LATEST_TD_REVISION=$(aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json | jq '.taskDefinition.revision')
+                         LATEST_TD_REVISION=$(aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json | jq -r '.taskDefinition.revision')
                          aws ecs update-service --cluster $AWS_ECS_CLUSTER --service $AWS_ECS_SERVICE --task-definition $AWS_ECS_TASK_DEFINITION:$LATEST_TD_REVISION
                          aws ecs wait services-stable --cluster $AWS_ECS_CLUSTER --services $AWS_ECS_SERVICE
                       '''
