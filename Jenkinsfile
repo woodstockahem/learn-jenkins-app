@@ -107,6 +107,7 @@ pipeline {
                     netlify status
                     netlify deploy --dir=build 
                 '''
+            }
         }
 
 /*
