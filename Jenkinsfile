@@ -16,7 +16,6 @@ pipeline {
             }
         }        
 
-
         stage('Build') {
             agent {
                 docker {
@@ -67,7 +66,6 @@ pipeline {
                     }
                     steps {
                         sh '''
-                            npm install serve
                             node_modules/.bin/serve -s build &
                             sleep 10
                             npx playwright test --reporter=html --output=test-results
@@ -95,7 +93,7 @@ pipeline {
         stage('Deploy staging') {
             agent {
                 docker {
-                    image 'node:18-bullseye'
+                    image 'my-playwright'
                     reuseNode true
                 }
             }
@@ -105,7 +103,8 @@ pipeline {
                     netlify --version
                     echo "Deploying to Staging. site ID: $NETLIFY_SITE_ID"
                     netlify status
-                    netlify deploy --dir=build 
+                    netlify deploy --dir=build --json > deploy-output.json
+                    npx playwright test --reporter=html --output=test-results
                 '''
             }
         }
