@@ -35,7 +35,7 @@ pipeline {
                             reuseNode true
                         }
                     }
-                    steps {
+                                             steps {
                         sh '''
                             test -f build/index.html
                             npm test
@@ -73,7 +73,7 @@ pipeline {
                                 keepAll: false,
                                 reportDir: 'playwright-report',
                                 reportFiles: 'index.html',
-                                reportName: 'Playwright Local Report',
+                                reportName: 'Playwright_Local_Report',
                                 reportTitles: '',
                                 useWrapperFileDirectly: true,
                             ])
@@ -126,7 +126,7 @@ pipeline {
                         keepAll: false,
                         reportDir: 'playwright-report',
                         reportFiles: 'index.html',
-                        reportName: 'Playwright E2E Report',
+                        reportName: 'Playwright_E2E_Report',
                         reportTitles: '',
                         useWrapperFileDirectly: true,
                     ])
