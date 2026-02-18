@@ -19,7 +19,7 @@
   ],
   "volumes": [],
   "networkMode": "awsvpc",
-  "memory": "512 MB",
+  "memory": "512",
   "cpu": "256",
   "executionRoleArn": ""
 }
