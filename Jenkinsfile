@@ -23,7 +23,8 @@ pipeline {
                       // some block
                       sh '''
                          aws --version
-                         aws s3 ls
+                         echo "Hello World from AWS CLI" >index.html
+                         aws s3 cp index.html s3://learn-jenkins-202602181342/index.html
                       '''
                 }
                 
