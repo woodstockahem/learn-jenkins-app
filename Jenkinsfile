@@ -8,6 +8,19 @@ pipeline {
     }
     stages {
 
+null    stage('AWS') {
+            agent {
+                docker {
+                    image 'amazon/aws-cli'
+                    reuseNode true
+                }
+            }
+            steps {
+                sh '''
+                    aws --version
+                '''
+            }
+}
         stage('Docker') {
             steps {
                 sh '''
@@ -89,7 +102,7 @@ pipeline {
                 }
             }
         }
-
+/*
         stage('Deploy staging') {
             agent {
                 docker {
@@ -112,7 +125,7 @@ pipeline {
                 '''
             }
         }
-
+*/
 /*
         stage('Deploy Prod') {
             agent {
