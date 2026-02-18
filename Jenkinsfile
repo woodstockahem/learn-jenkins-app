@@ -61,11 +61,6 @@ pipeline {
                             node_modules/.bin/serve -s build &
                             sleep 10
                             npx playwright test --reporter=html --output=test-results
-                            echo "=== Debug: Playwright report contents (local) ==="
-                            ls -la
-                            ls -la playwright-report || true
-                            ls -la playwright-report/data || true
-                            test -f playwright-report/index.html && head -n 5 playwright-report/index.html || true
                         '''
                     }
                     post {
@@ -119,11 +114,6 @@ pipeline {
             steps {
                 sh '''
                     npx playwright test --reporter=html --output=test-results
-                    echo "=== Debug: Playwright report contents (prod) ==="
-                    ls -la
-                    ls -la playwright-report || true
-                    ls -la playwright-report/data || true
-                    test -f playwright-report/index.html && head -n 5 playwright-report/index.html || true
                 '''    
             }
             post {
