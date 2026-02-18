@@ -34,11 +34,16 @@ pipeline {
                 docker {
                     image 'my-aws-cli'
                     reuseNode true
-                    args "-u root -v /run/host-services/docker.proxy.sock:/var/run/docker.sock --entrypoint=''"                    
+                    args "-u root -v /var/run/docker.sock:/var/run/docker.sock --entrypoint=''"                    
                 }
             }
             steps {
                 sh '''
+                    echo "=== Debug: docker socket and env ==="
+                    ls -l /var/run/docker.sock || true
+                    env | grep -E 'DOCKER|BUILDKIT' || true
+                    docker version || true
+                    docker info || true
                     docker build -t myjenkinsapp .
                 '''
             }
