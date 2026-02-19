@@ -2,6 +2,7 @@ pipeline {
     agent any
 
     environment {
+           REACT_APP_VERSION = "1.0.${BUILD_ID}"
            AWS_DEFAULT_REGION = 'eu-north-1'
            AWS_ECS_CLUSTER = 'LearnJenkinsApp-Cluster-Prod'
            AWS_ECS_SERVICE = 'LearnJenkinsApp-Service-Prod'
@@ -34,13 +35,13 @@ pipeline {
                 docker {
                     image 'my-aws-cli'
                     reuseNode true
-                    args "-u root -v /var/run/docker.sock:/var/run/docker.sock --entrypoint=''"                    
+                    args "-u root -v /var/run/docker.sock:/var/run/docker.sock --entrypoint=''"
                 }
             }
             steps {
                 sh '''
                     export DOCKER_BUILDKIT=0
-                    docker build -t myjenkinsapp .
+                    docker build -t myjenkinsapp:$REACT_APP_VERSION .
                 '''
             }
         } 

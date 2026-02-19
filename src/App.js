@@ -2,6 +2,8 @@ import logo from './logo.svg';
 import './App.css';
 
 function App() {
+  const appVersion = process.env.REACT_APP_VERSION || '1';
+
   return (
     <div className="App">
       <header className="App-header">
@@ -16,7 +18,7 @@ function App() {
         </a>
       </header>
       <p>
-          Application version: 1
+          Application version: {appVersion}
       </p>
     </div>
   );
