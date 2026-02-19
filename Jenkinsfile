@@ -39,13 +39,6 @@ pipeline {
             }
             steps {
                 sh '''
-                    echo "=== Debug: docker socket and env ==="
-                    ls -l /var/run/docker.sock || true
-                    env | grep -E 'DOCKER|BUILDKIT' || true
-                    docker version || true
-                    docker info || true
-                    echo "=== Debug: buildx ==="
-                    docker buildx ls || true
                     export DOCKER_BUILDKIT=0
                     docker build -t myjenkinsapp .
                 '''
@@ -56,7 +49,7 @@ pipeline {
             agent {
                 docker {
                     image 'amazon/aws-cli'
-                    args "-u root --entrypoint=''"
+                    args "--entrypoint=''"
                     reuseNode true
                 }
             }
