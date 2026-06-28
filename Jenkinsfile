@@ -106,7 +106,7 @@ pipeline {
                 }
             }
             environment {
-                NETLIFY_SITE_URL = 'https://sparkling-pie-996e52.netlify.app/'
+                NETLIFY_SITE_URL = 'https://sparkling-pie-996e52.netlify.app'
             }
             steps {
                 sh '''
