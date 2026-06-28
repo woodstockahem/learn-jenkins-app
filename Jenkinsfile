@@ -22,9 +22,9 @@ pipeline {
             }
         }
         */
-        stage('Run Tests') {
+        stage('Tests') {
             parallel {
-                stage('Test') {
+                stage('Unit Test') {
                     agent {
                         docker {
                             image 'node:18-alpine'
@@ -33,8 +33,7 @@ pipeline {
                     }
                     steps {
                         sh '''
-                        #test -f build/index.html
-                        npm test
+                            npm test
                         '''
                     }
                 }
@@ -47,10 +46,10 @@ pipeline {
                     }
                     steps {
                         sh '''
-                        npm install serve
-                        node_modules/.bin/serve -s build &
-                        sleep 10
-                        npx playwright test --reporter=html
+                            npm install serve
+                            node_modules/.bin/serve -s build &
+                            sleep 10
+                            npx playwright test --reporter=html
                         '''
                     }
                 }
@@ -61,16 +60,18 @@ pipeline {
         always {
             junit 'jest-results/junit.xml'
             publishHTML([
-                allowMissing: false,
+                allowMissing        : false,
                 alwaysLinkToLastBuild: false,
-                icon: '',
-                keepAll: false,
-                reportDir: 'playwright-report',
-                reportFiles: 'index.html',
-                reportName: 'Playwright HTML Report',
-                reportTitles: '',
+                icon                : '',
+                keepAll             : false,
+                reportDir           : 'playwright-report',
+                reportFiles         : 'index.html',
+                reportName          : 'Playwright HTML Report',
+                reportTitles        : '',
                 useWrapperFileDirectly: true
             ])
         }
     }
+    }
+   
 }
