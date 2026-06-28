@@ -106,10 +106,11 @@ pipeline {
                 }
             }
             environment {
-                NETLIFY_SITE_URL = 'https://sparkling-pie-996e52.netlify.app'
+                CI_ENVIRONMENT_URL = 'https://sparkling-pie-996e52.netlify.app'
             }
             steps {
                 sh '''
+                    echo "Running Playwright against: $CI_ENVIRONMENT_URL"
                     npx playwright test --reporter=html
                 '''
             }
